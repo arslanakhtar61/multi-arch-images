@@ -5,7 +5,7 @@ WORKDIR /go/src/github.com/kubernetes-csi/node-driver-registrar/
 RUN git clone --depth 1 -b "${VERSION}" https://github.com/kubernetes-csi/node-driver-registrar.git . \
      && GOARCH=$(echo $TARGETPLATFORM | cut -f2 -d '/') make build
 
-FROM gcr.io/distroless/static@sha256:23aa732bba4c8618c0d97c26a72a32997363d591807b0d4c31b0bbc8a774bddf
+FROM gcr.io/distroless/static@sha256:a7fbf4bc518870042021d9fff54b486da3c3182f880b52f91439d63895ec8423
 WORKDIR /
 COPY --from=builder /go/src/github.com/kubernetes-csi/node-driver-registrar/bin/csi-node-driver-registrar csi-node-driver-registrar
 ENTRYPOINT ["/csi-node-driver-registrar"]
