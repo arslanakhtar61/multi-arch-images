@@ -43,7 +43,7 @@ jobs:
             --platform linux/amd64,linux/arm64 \
             --output "type=image,push=false" \
             --build-arg KIBANA_VERSION=${{ matrix.kibana-version }} \
-            --tag enros/kibana:${{ matrix.kibana-version }} \
+            --tag arslanakhtar61/kibana:${{ matrix.kibana-version }} \
             --file ./docker_builds/kibana/Dockerfile \
             ./docker_builds/kibana/
       -        
@@ -61,13 +61,13 @@ jobs:
             --platform linux/amd64,linux/arm64 \
             --output "type=image,push=true" \
             --build-arg KIBANA_VERSION=${{ matrix.kibana-version }} \
-            --tag enros/kibana:${{ matrix.kibana-version }} \
+            --tag arslanakhtar61/kibana:${{ matrix.kibana-version }} \
             --file ./docker_builds/kibana/Dockerfile \
             ./docker_builds/kibana/
       -
         name: Docker Check Manifest
         run: |
-          docker run --rm mplatform/mquery:latest enros/kibana:${{ matrix.kibana-version }}
+          docker run --rm mplatform/mquery:latest arslanakhtar61/kibana:${{ matrix.kibana-version }}
       -
         name: Clear
         if: always()
