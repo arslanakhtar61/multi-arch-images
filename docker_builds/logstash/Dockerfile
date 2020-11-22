@@ -3,7 +3,7 @@ ARG BUILD_DATE=
 
 FROM ${ARCH}debian:buster-slim
 
-ENV elastic_version='7.9.2'
+ENV elastic_version='7.9.3'
 ENV tarball='logstash-oss-'${elastic_version}'.tar.gz'
 ENV license='Apache 2.0'
 ENV locale='de_AT.UTF-8'
