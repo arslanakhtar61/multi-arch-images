@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        logstash-version: [ 7.9.3 ]
+        logstash-version: [ 7.9.2 ]
     env:
       VERSION: $(cat docker_builds/logstash/.version)
     steps:
