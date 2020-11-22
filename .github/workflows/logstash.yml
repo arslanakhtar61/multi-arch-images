@@ -1,0 +1,75 @@
+name: logstash
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/logstash.yml'
+      - 'docker_builds/logstash/**'
+      - '!docker_builds/logstash/*.md'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        logstash-version: [ 7.9.3 ]
+    env:
+      VERSION: $(cat docker_builds/logstash/.version)
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v2
+      - 
+        name: Set up Docker Buildx
+        uses: crazy-max/ghaction-docker-buildx@v3
+        with:
+          buildx-version: latest
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ matrix.logstash-version }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      - 
+        name: Docker Buildx (build)
+        run: |
+          docker buildx build \
+            --cache-from "type=local,src=/tmp/.buildx-cache" \
+            --cache-to "type=local,dest=/tmp/.buildx-cache" \
+            --platform linux/amd64,linux/arm64 \
+            --output "type=image,push=false" \
+            --build-arg logstash_VERSION=${{ matrix.logstash-version }} \
+            --tag arslanakhtar61/logstash:${{ matrix.logstash-version }} \
+            --file ./docker_builds/logstash/Dockerfile \
+            ./docker_builds/logstash/
+      -        
+        name: Login to GitHub Docker Registry
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}        
+        run: |
+          echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+      -  
+        name: Docker Buildx (push)
+        run: |
+          docker buildx build \
+            --cache-from "type=local,src=/tmp/.buildx-cache" \
+            --platform linux/amd64,linux/arm64 \
+            --output "type=image,push=true" \
+            --build-arg logstash_VERSION=${{ matrix.logstash-version }} \
+            --tag arslanakhtar61/logstash:${{ matrix.logstash-version }} \
+            --file ./docker_builds/logstash/Dockerfile \
+            ./docker_builds/logstash/
+      -
+        name: Docker Check Manifest
+        run: |
+          docker run --rm mplatform/mquery:latest arslanakhtar61/logstash:${{ matrix.logstash-version }}
+      -
+        name: Clear
+        if: always()
+        run: |
+          rm -f ${HOME}/.docker/config.json
