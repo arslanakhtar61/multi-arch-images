@@ -20,8 +20,8 @@ RUN groupadd --gid 1000 logstash && \
 RUN mkdir /usr/share/logstash
 WORKDIR /usr/share/logstash
 
-RUN curl -sL https://artifacts.elastic.co/downloads/logstash/logstash-oss-${elastic_version}-linux-`uname -m`.tar.gz | tar --strip-components=1 -zxf - && \
-    chown --recursive logstash:logstash /usr/share/logstash/ && \
+RUN curl -sL https://artifacts.elastic.co/downloads/logstash/logstash-oss-${elastic_version}-linux-`uname -m`.tar.gz | tar --strip-components=1 -zxf -
+RUN chown --recursive logstash:logstash /usr/share/logstash/ && \
     chown -R logstash:root /usr/share/logstash && \
     chmod -R g=u /usr/share/logstash && \
     find /usr/share/logstash -type d -exec chmod g+s {} \; && \
