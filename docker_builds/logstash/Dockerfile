@@ -1,8 +1,8 @@
 # This Dockerfile was generated from templates/Dockerfile.j2
 FROM centos:7
 
-ENV elastic_version='7.9.3'
-ENV tarball='logstash-oss-'${elastic_version}'.tar.gz'
+ENV elastic_version=7.9.3
+ENV tarball=logstash-oss-${elastic_version}.tar.gz
 ENV license='Apache 2.0'
 ENV locale='de_AT.UTF-8'
 
