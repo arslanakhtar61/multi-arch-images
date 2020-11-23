@@ -19,8 +19,8 @@ RUN groupadd --gid 1000 logstash && \
 
 # Add Logstash itself.
 RUN curl -sL https://artifacts.elastic.co/downloads/logstash/logstash-oss-${elastic_version}-linux-`uname -m`.tar.gz | \
-    tar --strip-components=1 -zxf - -C /usr/share && \
-    mv /usr/share/logstash-oss-${elastic_version}-linux-`uname -m` /usr/share/logstash && \
+    tar --strip-components=1 -zxf - -C /usr/share
+RUN mv /usr/share/logstash-oss-${elastic_version}-linux-`uname -m` /usr/share/logstash && \
     chown --recursive logstash:logstash /usr/share/logstash/ && \
     chown -R logstash:root /usr/share/logstash && \
     chmod -R g=u /usr/share/logstash && \
