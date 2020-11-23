@@ -17,15 +17,25 @@ RUN groupadd --gid 1000 logstash && \
       --home-dir /usr/share/logstash --no-create-home \
       logstash
 
-# Add Logstash itself.
-RUN curl -sL https://artifacts.elastic.co/downloads/logstash/logstash-oss-${elastic_version}-linux-`uname -m`.tar.gz | \
-    tar --strip-components=1 -zxf - -C /usr/share
-RUN mv /usr/share/logstash-oss-${elastic_version}-linux-`uname -m` /usr/share/logstash && \
+RUN mkdir /usr/share/logstash
+WORKDIR /usr/share/logstash
+
+RUN curl -sL https://artifacts.elastic.co/downloads/logstash/logstash-oss-${elastic_version}-linux-`uname -m`.tar.gz | tar --strip-components=1 -zxf - && \
     chown --recursive logstash:logstash /usr/share/logstash/ && \
     chown -R logstash:root /usr/share/logstash && \
     chmod -R g=u /usr/share/logstash && \
     find /usr/share/logstash -type d -exec chmod g+s {} \; && \
     ln -s /usr/share/logstash /opt/logstash
+
+# Add Logstash itself.
+# RUN curl -Lo - https://artifacts.elastic.co/downloads/logstash/logstash-${elastic_version}.tar.gz | \
+#     tar zxf - -C /usr/share && \
+#     mv /usr/share/logstash-${elastic_version} /usr/share/logstash && \
+#     chown --recursive logstash:logstash /usr/share/logstash/ && \
+#     chown -R logstash:root /usr/share/logstash && \
+#     chmod -R g=u /usr/share/logstash && \
+#     find /usr/share/logstash -type d -exec chmod g+s {} \; && \
+#     ln -s /usr/share/logstash /opt/logstash
 
 WORKDIR /usr/share/logstash
 
